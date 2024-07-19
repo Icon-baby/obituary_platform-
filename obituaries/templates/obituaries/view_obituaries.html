@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obituaries</title>
+    <meta name="description" content="Obituary for {{ obituary.name }}. Born on {{ obituary.date_of_birth }} and passed away on {{ obituary.date_of_death }}.">
+    <meta name="keywords" content="Obituary, {{ obituary.name }}, {{ obituary.author }}">
+    <meta property="og:title" content="Obituary for {{ obituary.name }}">
+    <meta property="og:description" content="Obituary for {{ obituary.name }}. Born on {{ obituary.date_of_birth }} and passed away on {{ obituary.date_of_death }}.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% static 'images/obituary_default.jpg' %}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+        .social-share {
+            margin-top: 20px;
+        }
+        .social-share a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Obituary",
+      "name": "{{ obituary.name }}",
+      "birthDate": "{{ obituary.date_of_birth }}",
+      "deathDate": "{{ obituary.date_of_death }}",
+      "description": "{{ obituary.content }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ obituary.author }}"
+      }
+    }
+    </script>
+</head>
+<body>
+    <h2>Obituaries</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Date of Birth</th>
+            <th>Date of Death</th>
+            <th>Content</th>
+            <th>Author</th>
+            <th>Submission Date</th>
+        </tr>
+        {% for obituary in page_obj %}
+        <tr>
+            <td>{{ obituary.name }}</td>
+            <td>{{ obituary.date_of_birth }}</td>
+            <td>{{ obituary.date_of_death }}</td>
+            <td>{{ obituary.content }}</td>
+            <td>{{ obituary.author }}</td>
+            <td>{{ obituary.submission_date }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </div>
+
+    <div class="social-share">
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">Share on Facebook</a>
+        <a href="https://twitter.com/share?url={{ request.build_absolute_uri }}">Share on Twitter</a>
+    </div>
+</body>
+</html>
